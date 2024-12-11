@@ -3,7 +3,7 @@ from joblib import load
 import numpy as np
 
 st.set_page_config(
-    page_title="HSV Disease App",  # Title of your web app 
+    page_title="HSV Disease Prediction",  # Title of your web app 
     layout="wide",                   # Layout options: "centered" or "wide"
     initial_sidebar_state="expanded" # Sidebar options: "expanded" or "collapsed"
 )

@@ -1,15 +1,19 @@
 import streamlit as st
 from joblib import load
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+# Sidebar for Model Selection
+
+scaler_diab = load('diab_scaler.joblib')
+scaler_heart= load('heart_scaler.joblib')
 
 st.set_page_config(
-    page_title="HSV Disease Prediction",  # Title of your web app 
+    page_title="HSV Disease App",  # Title of your web app 
     layout="wide",                   # Layout options: "centered" or "wide"
     initial_sidebar_state="expanded" # Sidebar options: "expanded" or "collapsed"
 )
 
-
-# Sidebar for Model Selection
 st.sidebar.title("Choose Disease")
 option = st.sidebar.selectbox(
     "Select a prediction model:",
@@ -36,7 +40,7 @@ if option == "Diabetes Prediction":
     skin_thickness = st.number_input("Skin Thickness", min_value=0, value=20)
     insulin = st.number_input("Insulin Level", min_value=0, value=85)
     bmi = st.number_input("BMI", min_value=0.0, value=25.0)
-    diabetes_pedigree = st.number_input("Diabetes Pedigree Function", min_value=0.0, value=0.5)
+    diabetes_pedigree = st.number_input("Diabetes Pedigree Function", min_value=0.00, value=0.50,format="%.3f")
     age = st.number_input("Age", min_value=0, value=30)
 
     # Load the diabetes model
@@ -45,6 +49,8 @@ if option == "Diabetes Prediction":
     # Predict button
     if st.button("Predict"):
         input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]])
+        input_data=input_data.reshape(1,-1)
+        input_data=scaler_diab.transform(input_data)
         prediction = diabetes_model.predict(input_data)
         st.write("Prediction:", "Diabetic" if prediction[0] == 1 else "Not Diabetic")
 
@@ -77,6 +83,8 @@ elif option == "Heart Disease Prediction":
     # Predict button
     if st.button("Predict"):
         input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+        input_data=input_data.reshape(1,-1)
+        input_data=scaler_heart.transform(input_data)
         prediction = heart_model.predict(input_data)
         st.write("Prediction:", "Heart Disease Present" if prediction[0] == 1 else "No Heart Disease")
 
